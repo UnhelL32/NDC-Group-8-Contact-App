@@ -4,344 +4,602 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group 8.2010 — NDC Premium Registry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b1120; }
-        .ndc-motto { font-family: 'Playfair Display', serif; font-style: italic; color: #fbbf24; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .ndc-title { font-family: 'Cinzel', serif; letter-spacing: 0.15em; }
+        /* --- Core Variables & Reset --- */
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-input: #070b14;
+            --border-amber: rgba(251, 191, 36, 0.2);
+            --amber-bright: #fbbf24;
+            --amber-gold: #d97706;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dark: #0f172a;
+            --emerald: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-light);
+            min-h-screen: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ndc-motto { 
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            color: var(--amber-bright); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .ndc-title { 
+            font-family: 'Cinzel', serif; 
+            letter-spacing: 0.15em; 
+        }
+
+        /* --- Login Page --- */
+        #loginPage {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-center: center;
+            background-color: #070b14;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .luxury-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-amber);
+            border-radius: 1rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            max-width: 450px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.7);
+            margin: auto;
+        }
+
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 1.5rem auto;
+            background: linear-gradient(135deg, var(--amber-gold) 0%, #b45309 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(217, 119, 6, 0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+        }
+
+        /* --- Form Elements --- */
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            tracking-width: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .input-control {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            font-size: 0.875rem;
+            transition: border-color 0.3s;
+        }
+        .input-control:focus {
+            outline: none;
+            border-color: var(--amber-gold);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2);
+        }
         
-        /* Premium UI Elements */
-        .luxury-card { background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(251, 191, 36, 0.15); backdrop-filter: blur(16px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
-        .gold-glow:focus { outline: none; border-color: #d97706 !important; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2); }
-        .gold-border { border-color: rgba(251, 191, 36, 0.25); }
-        .gold-gradient-btn { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #0f172a; }
-        .gold-gradient-btn:hover { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .gold-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: var(--text-dark);
+            font-weight: 700;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            transition: opacity 0.2s, transform 0.1s;
+            margin-top: 0.5rem;
+        }
+        .gold-btn:active { transform: scale(0.99); }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+            text-align: left;
+            display: none;
+        }
+
+        .footer-attribution {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #64748b;
+            text-align: left;
+        }
+
+        /* --- Main Layout Workspace --- */
+        header {
+            background-color: #070b14;
+            border-b: 1px solid var(--border-amber);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: var(--amber-bright);
+            border-color: var(--border-amber);
+        }
+        .logout-btn {
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        /* --- Dashboard Stats --- */
+        .stats-grid {
+            display: grid;
+            grid-template-cols: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card.blue { border-left: 4px solid #3b82f6; }
+        .stat-card.amber { border-left: 4px solid #f59e0b; }
+        .stat-card.emerald { border-left: 4px solid #10b981; }
+        .stat-card.red { border-left: 4px solid #ef4444; }
         
-        /* Custom Scrollbar for Luxury Look */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 3px; }
+        .stat-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); tracking-letter: 0.05em; }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: #fff; margin-top: 0.25rem; }
+
+        /* --- Form & Layout Grid Panels --- */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid #1e293b;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .panel-header {
+            background-color: #070b14;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-title { font-size: 0.75rem; font-weight: 700; color: var(--amber-bright); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .form-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-cols: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+        }
+        .span-2 { grid-column: span 2; }
+
+        /* --- Table Filter Controls --- */
+        .toolbar {
+            padding: 1rem 1.5rem;
+            background-color: rgba(7, 11, 20, 0.4);
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .search-input { max-width: 320px; }
+        .controls-right { display: flex; gap: 0.5rem; }
+        
+        .select-control {
+            background-color: var(--bg-input);
+            border: 1px solid #1e293b;
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+        }
+        .emerald-btn {
+            background-color: var(--emerald);
+            color: var(--text-dark);
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* --- Master Data Table --- */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 900px; }
+        th {
+            background-color: rgba(7, 11, 20, 0.6);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 1rem;
+            border-bottom: 2px solid #1e293b;
+        }
+        td { padding: 1rem; border-bottom: 1px solid #1e293b; font-size: 0.825rem; vertical-align: middle; }
+        tr:hover { background-color: rgba(255,255,255,0.02); }
+        
+        .badge {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.15rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .action-btn {
+            background: transparent;
+            border: 1px solid #334155;
+            padding: 0.35rem 0.65rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin-right: 0.25rem;
+            font-size: 11px;
+        }
+        .edit-btn { color: #60a5fa; }
+        .del-btn { color: #f87171; }
+
+        /* --- Chart Section View Layout --- */
+        .charts-container {
+            display: grid;
+            grid-template-cols: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+            width: 100%;
+        }
+
+        footer {
+            background-color: #070b14;
+            padding: 1.25rem;
+            text-align: center;
+            font-size: 11px;
+            color: #475569;
+            border-top: 1px solid #1e293b;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen flex flex-col antialiased">
+<body>
 
-    <div id="loginPage" class="fixed inset-0 z-50 flex items-center justify-center bg-[#070b14] px-4 overflow-y-auto">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-900/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600/5 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="luxury-card max-w-md w-full rounded-2xl p-8 border border-amber-500/20 text-center relative z-10 transition-all duration-500">
-            <div class="text-[10px] text-amber-500 font-bold tracking-widest uppercase mb-1">Archival Registry Platform</div>
-            <h1 class="ndc-title text-3xl font-extrabold text-white">Group 8.2010</h1>
+    <div id="loginPage">
+        <div class="luxury-card">
+            <div style="font-size: 10px; color: var(--amber-gold); font-weight:700; tracking-letter:0.1em; text-transform:uppercase;">Archival Registry Platform</div>
+            <h1 class="ndc-title" style="font-size: 2.25rem; margin-bottom: 1rem; color: #fff;">Group 8.2010</h1>
             
-            <div class="my-6 flex justify-center">
-                <div class="w-64 h-36 bg-white rounded-xl flex flex-col items-center justify-center border border-amber-500/30 p-1.5 overflow-hidden relative shadow-lg">
-                    <img id="ndcLogo" src="1000076422.jpg" alt="Notre Dame College Crest" class="object-contain h-full w-full block">
-                </div>
+            <div class="logo-placeholder">
+                <span class="logo-icon">🏛️</span>
             </div>
 
-            <p class="ndc-motto text-2xl font-semibold mb-2">"Diligite Lumen Sapientiae"</p>
-            <p class="text-xs text-slate-400 mb-8 max-w-xs mx-auto">Welcome, Notredamians of Group 8 Batch 2010.</p>
+            <p class="ndc-motto">"Diligite Lumen Sapientiae"</p>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2rem;">Welcome, Notredamians of Group 8 Batch 2010.</p>
 
-            <form id="loginForm" class="space-y-4 text-left">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">User Identification</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-500/60"><i class="fa-solid fa-shield text-xs"></i></span>
-                        <input type="text" id="userId" required placeholder="NDC 10" class="w-full bg-slate-950/60 pl-10 pr-4 py-2.5 rounded-lg border border-slate-800 text-sm text-white focus:border-amber-500 transition duration-300 gold-glow">
-                    </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>User Identification</label>
+                    <input type="text" id="userId" required placeholder="e.g., NDC 10" class="input-control">
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Gate Pass Keyphrase</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-500/60"><i class="fa-solid fa-key text-xs"></i></span>
-                        <input type="password" id="password" required placeholder="••••••••" class="w-full bg-slate-950/60 pl-10 pr-4 py-2.5 rounded-lg border border-slate-800 text-sm text-white focus:border-amber-500 transition duration-300 gold-glow">
-                    </div>
+                <div class="form-group">
+                    <label>Gate Pass Keyphrase</label>
+                    <input type="password" id="password" required placeholder="••••••••" class="input-control">
                 </div>
-                <div id="loginError" class="text-red-400 text-xs font-medium hidden flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation"></i> Security credentials mismatch. Please recheck.</div>
+                <div id="loginError" class="error-msg">⚠️ Security credentials mismatch. Please recheck.</div>
                 
-                <button type="submit" class="w-full py-3 gold-gradient-btn font-bold rounded-lg shadow-lg shadow-amber-900/20 hover:shadow-amber-500/10 transition duration-300 transform active:scale-[0.99] mt-2 tracking-widest uppercase text-xs">
-                    Authenticate Account
-                </button>
+                <button type="submit" class="gold-btn">Authenticate Account</button>
             </form>
 
-            <div class="mt-8 pt-4 border-t border-slate-900 text-left text-[11px] text-slate-500 flex justify-between items-center">
-                <div><span class="text-slate-400 block font-medium">Creator Node</span>Md. Minhajul Haque</div>
-                <div class="text-right"><span class="text-slate-400 block font-medium">Roll Reference</span>1108081</div>
+            <div class="footer-attribution">
+                <div><span style="color:var(--text-muted); display:block;">Creator Node</span>Md. Minhajul Haque</div>
+                <div style="text-align:right;"><span style="color:var(--text-muted); display:block;">Roll Reference</span>1108081</div>
             </div>
         </div>
     </div>
 
-
-    <div id="appInterface" class="hidden flex-1 flex flex-col">
-        <header class="bg-slate-950/80 border-b border-amber-500/10 sticky top-0 z-40 backdrop-blur-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
-                <div class="flex items-center space-x-3">
-                    <div class="h-10 w-10 bg-gradient-to-br from-amber-500 to-amber-700 text-slate-950 rounded-lg flex items-center justify-center text-lg font-bold shadow-md shadow-amber-500/10"><i class="fa-solid fa-building-columns"></i></div>
-                    <div>
-                        <h2 class="text-md font-bold tracking-widest text-white ndc-title">Group 8.2010</h2>
-                        <p class="text-[10px] text-amber-500/80 font-semibold tracking-wider uppercase">Notre Dame College Registry Workspace</p>
-                    </div>
+    <div id="appInterface" class="hidden">
+        <header>
+            <div class="header-container">
+                <div>
+                    <h2 class="ndc-title" style="font-size: 1.15rem; color:#fff;">Group 8.2010</h2>
+                    <p style="font-size: 9px; color: var(--amber-gold); text-transform: uppercase; font-weight:700;">Notre Dame College Registry</p>
                 </div>
-                
-                <nav class="flex items-center space-x-2">
-                    <button id="navDatabase" onclick="switchTab('database')" class="px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 bg-amber-500/10 text-amber-500 border border-amber-500/30"><i class="fa-solid fa-address-book mr-2"></i> Registry Ledger</button>
-                    <button id="navCharts" onclick="switchTab('charts')" class="px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 text-slate-400 hover:text-white hover:bg-slate-900"><i class="fa-solid fa-chart-pie mr-2"></i> Analytical Charts</button>
-                    <div class="h-6 w-px bg-slate-800 mx-2"></div>
-                    <button onclick="logout()" class="p-2 rounded-lg text-xs font-semibold text-red-400 hover:text-red-300 hover:bg-red-950/20 transition" title="Log Out"><i class="fa-solid fa-right-from-bracket text-base"></i></button>
+                <nav class="nav-tabs">
+                    <button id="navDatabase" onclick="switchTab('database')" class="tab-btn active">Ledger Matrix</button>
+                    <button id="navCharts" onclick="switchTab('charts')" class="tab-btn">Analytics</button>
+                    <button onclick="logout()" class="tab-btn logout-btn">Exit</button>
                 </nav>
             </div>
         </header>
 
-        <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col space-y-8">
-            
-            <div id="tabDatabase" class="space-y-8 animate-fade-in">
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="luxury-card p-5 rounded-xl flex items-center space-x-4 border-l-4 border-l-blue-500">
-                        <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg text-xl"><i class="fa-solid fa-graduation-cap"></i></div>
-                        <div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Alumni Enrolled</div>
-                            <div id="statTotal" class="text-2xl font-black text-white mt-0.5">0</div>
-                        </div>
+        <main>
+            <div id="tabDatabase">
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <span class="stat-title">Alumni Enrolled</span>
+                        <div id="statTotal" class="stat-value">0</div>
                     </div>
-                    <div class="luxury-card p-5 rounded-xl flex items-center space-x-4 border-l-4 border-l-amber-500">
-                        <div class="p-3 bg-amber-500/10 text-amber-400 rounded-lg text-xl"><i class="fa-solid fa-earth-asia"></i></div>
-                        <div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Global Sovereignties</div>
-                            <div id="statCountries" class="text-2xl font-black text-white mt-0.5">0</div>
-                        </div>
+                    <div class="stat-card amber">
+                        <span class="stat-title">Global Sovereignties</span>
+                        <div id="statCountries" class="stat-value">0</div>
                     </div>
-                    <div class="luxury-card p-5 rounded-xl flex items-center space-x-4 border-l-4 border-l-emerald-500">
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg text-xl"><i class="fa-solid fa-user-tie"></i></div>
-                        <div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Professional Fields</div>
-                            <div id="statOccupations" class="text-2xl font-black text-white mt-0.5">0</div>
-                        </div>
+                    <div class="stat-card emerald">
+                        <span class="stat-title">Professional Fields</span>
+                        <div id="statOccupations" class="stat-value">0</div>
                     </div>
-                    <div class="luxury-card p-5 rounded-xl flex items-center space-x-4 border-l-4 border-l-red-500">
-                        <div class="p-3 bg-red-500/10 text-red-400 rounded-lg text-xl"><i class="fa-solid fa-heart-pulse"></i></div>
-                        <div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Blood Matrix Pools</div>
-                            <div id="statBlood" class="text-2xl font-black text-white mt-0.5">0</div>
-                        </div>
+                    <div class="stat-card red">
+                        <span class="stat-title">Blood Variant Pools</span>
+                        <div id="statBlood" class="stat-value">0</div>
                     </div>
                 </div>
 
-                <div class="luxury-card rounded-xl overflow-hidden border border-amber-500/10">
-                    <div class="bg-slate-950/80 border-b border-slate-900 px-6 py-4 flex justify-between items-center">
-                        <h3 id="formPanelTitle" class="text-xs font-bold text-amber-500 tracking-widest uppercase"><i class="fa-solid fa-user-plus mr-2"></i> Catalog New Classmate Profile</h3>
-                        <button id="cancelEditBtn" onclick="resetForm()" class="hidden text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white bg-slate-900 px-3 py-1 rounded-md border border-slate-800 transition">Discard Modifications</button>
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 id="formPanelTitle" class="panel-title">Catalog Profile Node</h3>
+                        <button id="cancelEditBtn" onclick="resetForm()" class="tab-btn hidden" style="background:#1e293b;">Cancel Edit</button>
                     </div>
-                    <form id="studentForm" class="p-6 grid grid-cols-1 md:grid-cols-4 gap-5">
+                    <form id="studentForm">
                         <input type="hidden" id="editIndex">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">College ID/Roll <span class="text-amber-500">*</span></label>
-                            <input type="number" id="roll" required placeholder="e.g., 1108081" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>College Roll *</label>
+                                <input type="number" id="roll" required placeholder="1108081" class="input-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Official Full Name *</label>
+                                <input type="text" id="name" required placeholder="Md. Minhajul Haque" class="input-control">
+                            </div>
+                            <div class="form-group">
+                                <label>College Nickname *</label>
+                                <input type="text" id="nickname" required placeholder="Minhaj" class="input-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Blood Group *</label>
+                                <select id="bloodGroup" required class="input-control" style="background-color: var(--bg-input);">
+                                    <option value="">Select Group</option>
+                                    <option value="A+">A+</option><option value="A-">A-</option>
+                                    <option value="B+">B+</option><option value="B-">B-</option>
+                                    <option value="O+">O+</option><option value="O-">O-</option>
+                                    <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Current Country Domain *</label>
+                                <input type="text" id="country" required placeholder="Bangladesh" class="input-control">
+                            </div>
+                            <div class="form-group">
+                                <label>City Location *</label>
+                                <input type="text" id="location" required placeholder="Dhaka" class="input-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Occupation Classification *</label>
+                                <select id="occupationType" required class="input-control" style="background-color: var(--bg-input);">
+                                    <option value="">Select Domain</option>
+                                    <option value="Engineer">Engineer</option>
+                                    <option value="Doctor">Doctor</option>
+                                    <option value="Corporate/Business">Corporate/Business</option>
+                                    <option value="Research/Academia">Research/Academia</option>
+                                    <option value="Govt. Service">Govt. Service</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Detailed Vocation</label>
+                                <input type="text" id="detailedOccupation" placeholder="Sub Divisional Engineer, BPDB" class="input-control">
+                            </div>
+                            <div class="form-group span-2">
+                                <label>Phone Secure Node *</label>
+                                <input type="tel" id="phone" required placeholder="+88017XXXXXXXX" class="input-control">
+                            </div>
+                            <div class="form-group span-2">
+                                <label>Mail Gateway *</label>
+                                <input type="email" id="email" required placeholder="name@domain.com" class="input-control">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Official Full Name <span class="text-amber-500">*</span></label>
-                            <input type="text" id="name" required placeholder="e.g., Kazi Arif" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">College Call Sign/Nick <span class="text-amber-500">*</span></label>
-                            <input type="text" id="nickname" required placeholder="e.g., Arif" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Blood Group Record <span class="text-amber-500">*</span></label>
-                            <select id="bloodGroup" required class="w-full bg-slate-950/80 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                                <option value="" class="bg-slate-950">Select Pool</option>
-                                <option value="A+" class="bg-slate-950">A+</option><option value="A-" class="bg-slate-950">A-</option>
-                                <option value="B+" class="bg-slate-950">B+</option><option value="B-" class="bg-slate-950">B-</option>
-                                <option value="O+" class="bg-slate-950">O+</option><option value="O-" class="bg-slate-950">O-</option>
-                                <option value="AB+" class="bg-slate-950">AB+</option><option value="AB-" class="bg-slate-950">AB-</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Current Country Domain <span class="text-amber-500">*</span></label>
-                            <input type="text" id="country" required placeholder="e.g., Bangladesh" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Metropolitan City Location <span class="text-amber-500">*</span></label>
-                            <input type="text" id="location" required placeholder="e.g., Dhaka" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Occupation Domain Classification <span class="text-amber-500">*</span></label>
-                            <select id="occupationType" required class="w-full bg-slate-950/80 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                                <option value="" class="bg-slate-950">Select Classification</option>
-                                <option value="Engineer" class="bg-slate-950">Engineer</option>
-                                <option value="Doctor" class="bg-slate-950">Doctor</option>
-                                <option value="Corporate/Business" class="bg-slate-950">Corporate/Business</option>
-                                <option value="Research/Academia" class="bg-slate-950">Research/Academia</option>
-                                <option value="Govt. Service" class="bg-slate-950">Govt. Service</option>
-                                <option value="Other" class="bg-slate-950">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Detailed Structural Vocation</label>
-                            <input type="text" id="detailedOccupation" placeholder="e.g., Sub Divisional Engineer, BPDB" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Direct Secure Phone Node <span class="text-amber-500">*</span></label>
-                            <input type="tel" id="phone" required placeholder="e.g., +88017XXXXXXXX" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div class="md:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Electronic Mail Gateway <span class="text-amber-500">*</span></label>
-                            <input type="email" id="email" required placeholder="e.g., name@domain.com" class="w-full bg-slate-950/40 px-3 py-2 rounded-lg border border-slate-800 focus:border-amber-600 transition text-sm text-white gold-glow">
-                        </div>
-                        <div class="md:col-span-1 flex items-end">
-                            <button type="submit" id="submitBtn" class="w-full py-2.5 gold-gradient-btn font-bold rounded-lg transition duration-200 text-xs tracking-widest uppercase h-[38px] shadow-lg shadow-amber-600/10"><i class="fa-solid fa-floppy-disk mr-1.5"></i> Encrypt & Save</button>
+                        <div style="padding: 0 1.5rem 1.5rem 1.5rem; text-align: right;">
+                            <button type="submit" id="submitBtn" class="gold-btn" style="width: auto; padding: 0.65rem 2rem;">Save Profile</button>
                         </div>
                     </form>
                 </div>
 
-                <div class="luxury-card rounded-xl overflow-hidden border border-amber-500/10">
-                    <div class="p-4 bg-slate-950/60 border-b border-slate-900 flex flex-col md:flex-row gap-4 justify-between items-center">
-                        <div class="relative w-full md:w-80">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-500/60"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                            <input type="text" id="searchBar" oninput="renderTable()" placeholder="Filter master ledger index array..." class="w-full bg-slate-950/80 pl-9 pr-4 py-2 rounded-lg border border-slate-800 text-xs text-white focus:border-amber-600 focus:outline-none transition gold-glow">
-                        </div>
-                        
-                        <div class="flex space-x-3 w-full md:w-auto justify-end items-center">
-                            <select id="sortBy" onchange="renderTable()" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-xs font-semibold text-slate-300 focus:outline-none focus:border-amber-600 transition">
-                                <option value="roll" class="bg-slate-950">Index Sequence: Roll</option>
-                                <option value="name" class="bg-slate-950">Index Sequence: Name</option>
-                                <option value="location" class="bg-slate-950">Index Sequence: Location</option>
+                <div class="panel">
+                    <div class="toolbar">
+                        <input type="text" id="searchBar" oninput="renderTable()" placeholder="Filter primary index arrays..." class="input-control search-input">
+                        <div class="controls-right">
+                            <select id="sortBy" onchange="renderTable()" class="select-control">
+                                <option value="roll">Order by Roll</option>
+                                <option value="name">Order by Name</option>
+                                <option value="location">Order by City</option>
                             </select>
-                            
-                            <button onclick="downloadCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-slate-950 text-xs font-bold tracking-widest uppercase rounded-lg flex items-center shadow-lg shadow-emerald-900/20 transition duration-200">
-                                <i class="fa-solid fa-file-csv mr-2 text-sm"></i> Extract CSV
-                            </button>
+                            <button onclick="downloadCSV()" class="emerald-btn">Extract CSV</button>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <div class="table-responsive">
+                        <table>
                             <thead>
-                                <tr class="bg-slate-950/40 border-b border-slate-900 text-slate-400 text-[10px] font-bold tracking-widest uppercase">
-                                    <th class="py-3.5 px-6 border-r border-slate-900/50">Roll Vector</th>
-                                    <th class="py-3.5 px-6">Ident identity</th>
-                                    <th class="py-3.5 px-4 text-center">Blood Variant</th>
-                                    <th class="py-3.5 px-6">Geographic Assignment</th>
-                                    <th class="py-3.5 px-6">Vocational Classification</th>
-                                    <th class="py-3.5 px-6">Encrypted Channels</th>
-                                    <th class="py-3.5 px-6 text-center">Data Controls</th>
+                                <tr>
+                                    <th style="width:100px;">Roll</th>
+                                    <th>Identity Details</th>
+                                    <th style="text-align:center; width:90px;">Blood</th>
+                                    <th>Geographic Assignment</th>
+                                    <th>Vocation Area</th>
+                                    <th>Secure Channels</th>
+                                    <th style="text-align:center; width:120px;">Controls</th>
                                 </tr>
                             </thead>
-                            <tbody id="studentTableBody" class="divide-y divide-slate-900 text-slate-300 text-xs">
-                                </tbody>
+                            <tbody id="studentTableBody"></tbody>
                         </table>
                     </div>
-                    <div id="noDataPlaceholder" class="p-12 text-center text-slate-500 font-medium hidden">
-                        <i class="fa-solid fa-ban text-4xl mb-3 text-slate-700"></i>
-                        <p class="tracking-wide text-sm">No profiles found matching current index parameters.</p>
+                    <div id="noDataPlaceholder" class="p-12 text-center text-slate-500 font-medium hidden" style="padding:3rem; text-align:center; color: var(--text-muted);">
+                        <p>No records found matching lookup query array tags.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="tabCharts" class="space-y-6 hidden animate-fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="luxury-card p-6 rounded-xl flex flex-col h-[380px]">
-                        <h4 class="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4 border-b border-slate-900 pb-2"><i class="fa-solid fa-earth-americas mr-2"></i> Sovereignties (Country Metric)</h4>
-                        <div class="flex-1 relative min-h-0">
-                            <canvas id="chartCountry"></canvas>
-                        </div>
+            <div id="tabCharts" class="space-y-6 hidden">
+                <div class="charts-grid">
+                    <div class="panel" style="padding:1.5rem; margin-bottom:1.5rem;">
+                        <h4 class="panel-title" style="margin-bottom:1rem;">Alumni Sovereignties (Country Metric)</h4>
+                        <div class="chart-wrapper"><canvas id="chartCountry"></canvas></div>
                     </div>
-                    <div class="luxury-card p-6 rounded-xl flex flex-col h-[380px]">
-                        <h4 class="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4 border-b border-slate-900 pb-2"><i class="fa-solid fa-city mr-2"></i> Strategic Hubs (Location Metric)</h4>
-                        <div class="flex-1 relative min-h-0">
-                            <canvas id="chartLocation"></canvas>
-                        </div>
+                    <div class="panel" style="padding:1.5rem; margin-bottom:1.5rem;">
+                        <h4 class="panel-title" style="margin-bottom:1rem;">Regional Hub Concentrations (City Metric)</h4>
+                        <div class="chart-wrapper"><canvas id="chartLocation"></canvas></div>
                     </div>
-                    <div class="luxury-card p-6 rounded-xl flex flex-col h-[380px]">
-                        <h4 class="text-xs font-bold text-amber-500 tracking-widest uppercase mb-4 border-b border-slate-900 pb-2"><i class="fa-solid fa-briefcase mr-2"></i> Career Distributions (Vocation)</h4>
-                        <div class="flex-1 relative min-h-0">
-                            <canvas id="chartOccupation"></canvas>
-                        </div>
+                    <div class="panel" style="padding:1.5rem; margin-bottom:1.5rem;">
+                        <h4 class="panel-title" style="margin-bottom:1rem;">Career Matrix Distribution (Vocation Sector)</h4>
+                        <div class="chart-wrapper"><canvas id="chartOccupation"></canvas></div>
                     </div>
                 </div>
             </div>
         </main>
 
-        <footer class="bg-slate-950 border-t border-slate-900 text-center py-5 text-xs text-slate-500 mt-auto">
-            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-                <div class="tracking-wide">Framework Portal Architecture: <span class="font-bold text-slate-400">Group 8.2010 Console Ledger Matrix</span></div>
-                <div class="flex items-center space-x-1 tracking-wider text-[11px]"><span class="font-medium text-slate-400">Systems Engineer Desk Node:</span> <span class="text-amber-500 font-bold">Md. Minhajul Haque</span> <span class="text-slate-600 font-black">(Roll: 1108081)</span></div>
+        <footer>
+            <div class="footer-container">
+                <div>Framework Engine Node: <strong>Group 8.2010 Ledger Terminal</strong></div>
+                <div>Systems Desk: <span style="color:var(--amber-bright); font-weight:600;">Md. Minhajul Haque</span> (Roll: 1108081)</div>
             </div>
         </footer>
     </div>
 
     <script>
-        // System Encryption Standard Configuration Settings
-        const SYSTEM_SECURE_AUTH = { uid: "NDC 10", pass: "Group08" };
+        const PORTAL_AUTH = { uid: "NDC 10", pass: "Group08" };
         
-        // Local Persistent Ledger State Array Framework
         let students = JSON.parse(localStorage.getItem('ndc_group8_students_lux')) || [
             { roll: "1108081", name: "Md. Minhajul Haque", nickname: "Minhaj", bloodGroup: "B+", country: "Bangladesh", location: "Mymensingh", occupationType: "Engineer", detailedOccupation: "Sub Divisional Engineer, BPDB", phone: "+8801711223344", email: "minhajul@example.com" },
             { roll: "1108002", name: "Anisur Rahman", nickname: "Anis", bloodGroup: "O+", country: "Bangladesh", location: "Dhaka", occupationType: "Doctor", detailedOccupation: "Resident Physician, DMC", phone: "+8801711223345", email: "anis@example.com" },
             { roll: "1108045", name: "Tahmid Hasan", nickname: "Tahmid", bloodGroup: "A+", country: "USA", location: "New York", occupationType: "Corporate/Business", detailedOccupation: "Financial Analyst, WallSt", phone: "+15550192834", email: "tahmid@example.com" }
         ];
 
-        // Global Graphics Plot Module Target Registries
-        let countryChartInstance = null;
-        let locationChartInstance = null;
-        let occupationChartInstance = null;
+        let countryChartInstance = null, locationChartInstance = null, occupationChartInstance = null;
 
-        // Lifecycle Synchronization Initializer Node
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("ndc_authenticated_lux") === "true") {
                 bypassLogin();
             }
-            document.getElementById("loginForm").addEventListener("submit", executePortalAuthentication);
-            document.getElementById("studentForm").addEventListener("submit", recordProfilePayload);
+            document.getElementById("loginForm").addEventListener("submit", handleLoginAuth);
+            document.getElementById("studentForm").addEventListener("submit", processProfileSave);
         });
 
-        // PLATFORM AUTHENTICATION ENGINE
-        function executePortalAuthentication(e) {
+        function handleLoginAuth(e) {
             e.preventDefault();
-            const uInput = document.getElementById("userId").value.trim();
-            const pInput = document.getElementById("password").value.trim();
-            const errBox = document.getElementById("loginError");
+            const u = document.getElementById("userId").value.trim();
+            const p = document.getElementById("password").value.trim();
+            const err = document.getElementById("loginError");
 
-            if (uInput === SYSTEM_SECURE_AUTH.uid && pInput === SYSTEM_SECURE_AUTH.pass) {
-                errBox.classList.add("hidden");
+            if (u === PORTAL_AUTH.uid && p === PORTAL_AUTH.pass) {
+                err.style.display = "none";
                 sessionStorage.setItem("ndc_authenticated_lux", "true");
                 bypassLogin();
             } else {
-                errBox.classList.remove("hidden");
+                err.style.display = "block";
             }
         }
 
         function bypassLogin() {
             document.getElementById("loginPage").classList.add("hidden");
             document.getElementById("appInterface").classList.remove("hidden");
-            refreshAppSystemCore();
-        }
-
-        // CONTROL NAV TABS WINDOW CONTROLLER 
-        function switchTab(target) {
-            const btnDb = document.getElementById("navDatabase");
-            const btnCh = document.getElementById("navCharts");
-            const tabDb = document.getElementById("tabDatabase");
-            const tabCh = document.getElementById("tabCharts");
-
-            if (target === 'database') {
-                tabDb.classList.remove("hidden");
-                tabCh.classList.add("hidden");
-                btnDb.className = "px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 bg-amber-500/10 text-amber-500 border border-amber-500/30";
-                btnCh.className = "px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 text-slate-400 hover:text-white hover:bg-slate-900";
-            } else {
-                tabDb.classList.add("hidden");
-                tabCh.classList.remove("hidden");
-                btnCh.className = "px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 bg-amber-500/10 text-amber-500 border border-amber-500/30";
-                btnDb.className = "px-4 py-2 rounded-lg text-xs font-bold tracking-widest uppercase transition duration-200 text-slate-400 hover:text-white hover:bg-slate-900";
-                renderChartsGraphicsEngine();
-            }
+            refreshSystemWorkspace();
         }
 
         function logout() {
@@ -351,18 +609,37 @@
             document.getElementById("loginForm").reset();
         }
 
-        // PARSER CORE METRIC AND REFRESH RE-INDEX DRIVERS
-        function saveToPersistentStorage() {
+        function switchTab(target) {
+            const btnDb = document.getElementById("navDatabase");
+            const btnCh = document.getElementById("navCharts");
+            const tabDb = document.getElementById("tabDatabase");
+            const tabCh = document.getElementById("tabCharts");
+
+            if (target === 'database') {
+                tabDb.classList.remove("hidden");
+                tabCh.classList.add("hidden");
+                btnDb.classList.add("active");
+                btnCh.classList.remove("active");
+            } else {
+                tabDb.classList.add("hidden");
+                tabCh.classList.remove("hidden");
+                btnCh.classList.add("active");
+                btnDb.classList.remove("active");
+                renderAnalyticsCharts();
+            }
+        }
+
+        function syncStorage() {
             localStorage.setItem('ndc_group8_students_lux', JSON.stringify(students));
         }
 
-        function refreshAppSystemCore() {
-            saveToPersistentStorage();
+        function refreshSystemWorkspace() {
+            syncStorage();
             renderTable();
-            computeLiveDashboardMetrics();
+            updateMetrics();
         }
 
-        function computeLiveDashboardMetrics() {
+        function updateMetrics() {
             document.getElementById("statTotal").innerText = students.length;
             document.getElementById("statCountries").innerText = [...new Set(students.map(s => s.country.toLowerCase().trim()))].length;
             document.getElementById("statOccupations").innerText = [...new Set(students.map(s => s.occupationType))].length;
@@ -373,7 +650,7 @@
             const query = document.getElementById("searchBar").value.toLowerCase();
             const sortBy = document.getElementById("sortBy").value;
             const tbody = document.getElementById("studentTableBody");
-            const emptyState = document.getElementById("noDataPlaceholder");
+            const placeholder = document.getElementById("noDataPlaceholder");
             
             tbody.innerHTML = "";
 
@@ -390,52 +667,46 @@
             });
 
             if (filtered.length === 0) {
-                emptyState.classList.remove("hidden");
+                placeholder.classList.remove("hidden");
                 return;
             } else {
-                emptyState.classList.add("hidden");
+                placeholder.classList.add("hidden");
             }
 
             filtered.forEach((item) => {
-                const structuralIndex = students.findIndex(s => s.roll === item.roll);
-
+                const globalIndex = students.findIndex(s => s.roll === item.roll);
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-900/40 transition-colors border-b border-slate-900/60";
                 tr.innerHTML = `
-                    <td class="py-4 px-6 font-bold text-amber-500 tracking-wider bg-slate-950/20 border-r border-slate-900/50">${item.roll}</td>
-                    <td class="py-4 px-6">
-                        <div class="font-bold text-white text-sm">${item.name}</div>
-                        <div class="text-[10px] text-slate-500">Call Sign: <span class="text-slate-400 font-medium">"${item.nickname}"</span></div>
+                    <td style="font-weight:700; color:var(--amber-gold);">${item.roll}</td>
+                    <td>
+                        <div style="font-weight:700; color:#fff;">${item.name}</div>
+                        <div style="font-size:10px; color:var(--text-muted);">Nick: "${item.nickname}"</div>
                     </td>
-                    <td class="py-4 px-4 text-center">
-                        <span class="px-2.5 py-1 rounded-md text-[10px] font-black tracking-widest bg-red-950/40 text-red-400 border border-red-900/30">${item.bloodGroup}</span>
+                    <td style="text-align:center;"><span class="badge">${item.bloodGroup}</span></td>
+                    <td>
+                        <div>${item.location}</div>
+                        <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">${item.country}</div>
                     </td>
-                    <td class="py-4 px-6">
-                        <div class="font-semibold text-slate-200">${item.location}</div>
-                        <div class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">${item.country}</div>
+                    <td>
+                        <div style="font-weight:600; color:#cbd5e1;">${item.occupationType}</div>
+                        <div style="font-size:10px; color:var(--text-muted); font-style:italic;">${item.detailedOccupation || '—'}</div>
                     </td>
-                    <td class="py-4 px-6">
-                        <div class="font-bold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-user-gear text-[10px] text-amber-500/50"></i>${item.occupationType}</div>
-                        <div class="text-[10px] text-slate-500 italic max-w-[180px] truncate mt-0.5">${item.detailedOccupation || 'No Specification'}</div>
+                    <td style="font-size:11px; color:#cbd5e1;">
+                        <div>📞 ${item.phone}</div>
+                        <div style="color:var(--text-muted); text-transform:lowercase; margin-top:2px;">✉️ ${item.email}</div>
                     </td>
-                    <td class="py-4 px-6 space-y-1 text-[11px] font-medium">
-                        <div class="text-slate-300 flex items-center"><i class="fa-solid fa-phone text-[9px] mr-2 text-amber-500/40"></i>${item.phone}</div>
-                        <div class="text-slate-400 flex items-center lowercase"><i class="fa-solid fa-envelope text-[9px] mr-2 text-amber-500/40"></i>${item.email}</div>
-                    </td>
-                    <td class="py-4 px-6 text-center">
-                        <div class="flex items-center justify-center space-x-2">
-                            <button onclick="initiateEditLifecycle(${structuralIndex})" class="p-2 text-blue-400 hover:bg-blue-950/30 rounded-lg border border-slate-900 transition" title="Modify Vector"><i class="fa-solid fa-signature"></i></button>
-                            <button onclick="deleteProfileVector(${structuralIndex})" class="p-2 text-red-400 hover:bg-red-950/30 rounded-lg border border-slate-900 transition" title="Purge Record"><i class="fa-solid fa-square-minus"></i></button>
-                        </div>
+                    <td style="text-align:center;">
+                        <button onclick="editProfile(${globalIndex})" class="action-btn edit-btn">Edit</button>
+                        <button onclick="purgeProfile(${globalIndex})" class="action-btn del-btn">Drop</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function recordProfilePayload(e) {
+        function processProfileSave(e) {
             e.preventDefault();
-            const editIdxVal = document.getElementById("editIndex").value;
+            const idxVal = document.getElementById("editIndex").value;
             
             const payload = {
                 roll: document.getElementById("roll").value.trim(),
@@ -450,32 +721,26 @@
                 email: document.getElementById("email").value.trim()
             };
 
-            if (editIdxVal === "") {
+            if (idxVal === "") {
                 if (students.some(s => s.roll === payload.roll)) {
-                    alert("System Exception Error: Targeted Registry Index Roll already assigned in active pool.");
+                    alert("Data Collision: This College Roll vector assignment already exists inside the active pool.");
                     return;
                 }
                 students.push(payload);
             } else {
-                const targetIdx = parseInt(editIdxVal);
+                const targetIdx = parseInt(idxVal);
                 if (students[targetIdx].roll !== payload.roll && students.some((s, idx) => s.roll === payload.roll && idx !== targetIdx)) {
-                    alert("System Exception Error: Mutated sequence matches an alternative index coordinate.");
+                    alert("Data Collision: Targeted Roll update path clashes with a separate existing node matrix.");
                     return;
                 }
                 students[targetIdx] = payload;
             }
 
             resetForm();
-            refreshAppCoreEngine();
+            refreshSystemWorkspace();
         }
 
-        function refreshAppCoreEngine() {
-            saveToPersistentStorage();
-            renderTable();
-            computeLiveDashboardMetrics();
-        }
-
-        function initiateEditLifecycle(idx) {
+        function editProfile(idx) {
             const data = students[idx];
             document.getElementById("editIndex").value = idx;
             document.getElementById("roll").value = data.roll;
@@ -489,132 +754,97 @@
             document.getElementById("phone").value = data.phone;
             document.getElementById("email").value = data.email;
 
-            document.getElementById("formPanelTitle").innerHTML = `<i class="fa-solid fa-user-pen mr-2 text-amber-500"></i> Mutating Profile Vector Array: ${data.name}`;
-            document.getElementById("submitBtn").className = "w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold rounded-lg transition duration-200 text-xs tracking-widest uppercase h-[38px] shadow-lg shadow-blue-900/20";
-            document.getElementById("submitBtn").innerHTML = `<i class="fa-solid fa-file-signature mr-1.5"></i> Apply Matrix Fix`;
+            document.getElementById("formPanelTitle").innerText = `Modifying Profile Vector: ${data.nickname}`;
+            document.getElementById("submitBtn").innerText = "Update Matrix Block";
             document.getElementById("cancelEditBtn").classList.remove("hidden");
             
             document.getElementById("studentForm").scrollIntoView({ behavior: 'smooth' });
         }
 
-        function deleteProfileVector(idx) {
-            if (confirm(`Security Confirmation Request: Purge profile alignment for "${students[idx].name}" from Group 8 structural memory files permanently?`)) {
+        function purgeProfile(idx) {
+            if (confirm(`Security Override Prompt: Delete active database ledger alignment entry for "${students[idx].name}" permanently?`)) {
                 students.splice(idx, 1);
                 resetForm();
-                refreshAppSystemCore();
+                refreshSystemWorkspace();
             }
         }
 
         function resetForm() {
             document.getElementById("studentForm").reset();
             document.getElementById("editIndex").value = "";
-            document.getElementById("formPanelTitle").innerHTML = `<i class="fa-solid fa-user-plus mr-2"></i> Catalog New Classmate Profile`;
-            document.getElementById("submitBtn").className = "w-full py-2.5 gold-gradient-btn font-bold rounded-lg transition duration-200 text-xs tracking-widest uppercase h-[38px] shadow-lg shadow-amber-600/10";
-            document.getElementById("submitBtn").innerHTML = `<i class="fa-solid fa-floppy-disk mr-1.5"></i> Encrypt & Save`;
+            document.getElementById("formPanelTitle").innerText = "Catalog Profile Node";
+            document.getElementById("submitBtn").innerText = "Save Profile";
             document.getElementById("cancelEditBtn").classList.add("hidden");
         }
 
-        // CSV EXTRACTION MODULE
         function downloadCSV() {
-            if (students.length === 0) {
-                alert("Operation aborted: Target workspace contains no records to serialize.");
-                return;
-            }
-
+            if (students.length === 0) { return alert("Ledger vector parameters missing fields."); }
             const headers = ["Student Roll", "Name", "College Nickname", "Blood Group", "Country", "City Location", "Occupation Type", "Detailed Occupation", "Phone Number", "Email Address"];
             const csvRows = [headers.join(",")];
 
             students.forEach(s => {
-                const values = [
-                    s.roll,
-                    `"${s.name.replace(/"/g, '""')}"`,
-                    `"${s.nickname.replace(/"/g, '""')}"`,
-                    s.bloodGroup,
-                    `"${s.country.replace(/"/g, '""')}"`,
-                    `"${s.location.replace(/"/g, '""')}"`,
-                    s.occupationType,
-                    `"${(s.detailedOccupation || '').replace(/"/g, '""')}"`,
-                    `"${s.phone.replace(/"/g, '""')}"`,
-                    `"${s.email.replace(/"/g, '""')}"`
-                ];
-                csvRows.push(values.join(","));
+                csvRows.push([
+                    s.roll, `"${s.name}"`, `"${s.nickname}"`, s.bloodGroup, `"${s.country}"`, `"${s.location}"`, s.occupationType, `"${s.detailedOccupation || ''}"`, `"${s.phone}"`, `"${s.email}"`
+                ].join(","));
             });
 
             const blob = new Blob([csvRows.join("\n")], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
-            if (link.download !== undefined) { 
-                link.setAttribute("href", URL.createObjectURL(blob));
-                link.setAttribute("download", "NDC_Group8_Batch2010_DataVault.csv");
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "NDC_Group8_Batch2010_Archive.csv");
+            link.click();
         }
 
-        // ANALYTICAL COMPILATION MECHANICS
-        function computeDistributionFrequency(key) {
-            let distributionMap = {};
+        function groupFrequencies(key) {
+            let map = {};
             students.forEach(s => {
-                let normalizedVal = s[key].trim();
-                if (key === 'country' || key === 'location') {
-                    normalizedVal = normalizedVal.replace(/\b\w/g, c => c.toUpperCase());
-                }
-                distributionMap[normalizedVal] = (distributionMap[normalizedVal] || 0) + 1;
+                let val = s[key].trim().replace(/\b\w/g, c => c.toUpperCase());
+                map[val] = (map[val] || 0) + 1;
             });
-            return { labels: Object.keys(distributionMap), data: Object.values(distributionMap) };
+            return { labels: Object.keys(map), data: Object.values(map) };
         }
 
-        function renderChartsGraphicsEngine() {
-            const countryMeta = computeDistributionFrequency('country');
-            const locationMeta = computeDistributionFrequency('location');
-            const occupationMeta = computeDistributionFrequency('occupationType');
+        function renderAnalyticsCharts() {
+            const country = groupFrequencies('country');
+            const loc = groupFrequencies('location');
+            const occ = groupFrequencies('occupationType');
 
             if (countryChartInstance) countryChartInstance.destroy();
             if (locationChartInstance) locationChartInstance.destroy();
             if (occupationChartInstance) occupationChartInstance.destroy();
 
-            const globalChartOptions = {
+            const options = {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: true, position: 'bottom', labels: { boxWidth: 10, color: '#94a3b8', font: { size: 9, family: 'Plus Jakarta Sans' } } }
+                    legend: { labels: { color: '#94a3b8', font: { size: 10, family: 'Plus Jakarta Sans' } } }
                 }
             };
 
             countryChartInstance = new Chart(document.getElementById('chartCountry').getContext('2d'), {
                 type: 'pie',
-                data: {
-                    labels: countryMeta.labels,
-                    datasets: [{ data: countryMeta.data, backgroundColor: ['#1e3a8a', '#d97706', '#10b981', '#6366f1', '#ec4899', '#475569'], borderColor: '#0f172a', borderWidth: 2 }]
-                },
-                options: globalChartOptions
+                data: { labels: country.labels, datasets: [{ data: country.data, backgroundColor: ['#1e3a8a', '#d97706', '#10b981', '#6366f1', '#ec4899'] }] },
+                options: options
             });
 
             locationChartInstance = new Chart(document.getElementById('chartLocation').getContext('2d'), {
                 type: 'bar',
-                data: {
-                    labels: locationMeta.labels,
-                    datasets: [{ label: 'Profiles Matrix', data: locationMeta.data, backgroundColor: '#d97706', borderRadius: 4 }]
-                },
+                data: { labels: loc.labels, datasets: [{ label: 'Headcount Matrix', data: loc.data, backgroundColor: '#d97706' }] },
                 options: {
-                    ...globalChartOptions,
+                    ...options,
                     indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: { 
-                        x: { beginAtZero: true, grid: { color: '#1e293b' }, ticks: { color: '#64748b', stepSize: 1 } },
-                        y: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', stepSize: 1 } },
+                        y: { ticks: { color: '#94a3b8' } }
                     }
                 }
             });
 
             occupationChartInstance = new Chart(document.getElementById('chartOccupation').getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: occupationMeta.labels,
-                    datasets: [{ data: occupationMeta.data, backgroundColor: ['#10b981', '#ef4444', '#3b82f6', '#f59e0b', '#06b6d4', '#475569'], borderColor: '#0f172a', borderWidth: 2 }]
-                },
-                options: { ...globalChartOptions, cutout: '70%' }
+                data: { labels: occ.labels, datasets: [{ data: occ.data, backgroundColor: ['#10b981', '#ef4444', '#3b82f6', '#f59e0b', '#06b6d4'] }] },
+                options: { ...options, cutout: '70%' }
             });
         }
     </script>
